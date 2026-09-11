@@ -1,0 +1,18 @@
+# Packaged skill/plugin archives — the source directories are the truth
+*.zip
+
+# Local Claude Code state, if anyone opens this repo as a project
+.claude/settings.local.json
+.claude/history/
+.claude/todos/
+.claude/shell-snapshots/
+.claude/logs/
+.credentials.json
+
+# Python bytecode (hook scripts, if any plugin adds them)
+__pycache__/
+*.pyc
+
+# OS cruft
+Thumbs.db
+.DS_Store

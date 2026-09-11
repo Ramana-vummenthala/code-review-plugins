@@ -1,0 +1,14 @@
+{
+  "name": "code-review-marketplace",
+  "owner": { "name": "Engineering" },
+  "description": "Claude Code plugins for engineering teams — structured, evidence-based code review reports.",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "code-review-reports",
+      "source": "./plugins/code-review-reports",
+      "description": "Criteria-driven Core Review Report skills for React/Next.js and Node.js/TypeScript repositories.",
+      "version": "1.0.0"
+    }
+  ]
+}
