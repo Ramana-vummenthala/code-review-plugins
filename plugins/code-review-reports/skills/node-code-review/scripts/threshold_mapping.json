@@ -1,0 +1,1561 @@
+{
+  "threshold_intro": "Every threshold below is the rule applied when scoring the findings on the other sheets in this workbook. Only the review areas the supplied criteria asked about are listed. A row is rated against the worst threshold it crosses.",
+  "band_intro": "The measured value alone places a finding in a band. Where a row reports several metrics, the worst band wins.",
+  "areas": [
+    {
+      "key": "architecture",
+      "prefix": "ARCH",
+      "label": "Architecture",
+      "match": [
+        "architecture",
+        "design",
+        "layering",
+        "structure",
+        "solid",
+        "coupling",
+        "modularity",
+        "separation of concerns",
+        "folder structure",
+        "code organization",
+        "code organisation",
+        "organization",
+        "organisation",
+        "dependency injection",
+        "reusability",
+        "boundaries"
+      ],
+      "thresholds": [
+        [
+          "Layering & Coupling",
+          ">= 3 cross-module imports",
+          "Flag for review, identify what is genuinely shared",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Layering & Coupling",
+          "A deep import into another module's internals",
+          "High, internal file layout becomes an unversioned public contract",
+          "High",
+          "P2"
+        ],
+        [
+          "Layering & Coupling",
+          "An inverted dependency (shared -> feature, repository -> route)",
+          "Critical, the layer model is broken and the shared layer cannot be tested alone",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Business Logic in the Web Layer",
+          "A database call or business rule inside a route handler",
+          "Flag for review, move it into a service",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Business Logic in the Web Layer",
+          "The pattern repeats across a whole feature or component",
+          "High, the web layer and the domain cannot be changed or tested apart",
+          "High",
+          "P2"
+        ],
+        [
+          "Responsibilities per File",
+          ">2 unrelated responsibilities in one file",
+          "Flag for review, split the file by responsibility",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Config & Secrets Loading",
+          "`process.env` read outside the config module",
+          "Flag for review, read config in one place and pass it down",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Config & Secrets Loading",
+          "No validation of required environment variables at startup",
+          "High, the service starts and then fails on the first request that needs the value",
+          "High",
+          "P2"
+        ],
+        [
+          "TypeScript Discipline",
+          "`strict` disabled in `tsconfig.json`",
+          "Critical, the compiler is not checking the code that handles user data",
+          "Critical",
+          "P1"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Layering & Coupling",
+          "0 cross-boundary imports",
+          "1-2 imports within the same layer",
+          ">= 3 cross-module imports, or a deep import into internals",
+          "An inverted dependency (shared -> feature, repository -> route)"
+        ],
+        [
+          "Business Logic in the Web Layer",
+          "Handlers parse, call a service, and respond",
+          "1 handler with a query in it",
+          "Several handlers in one feature",
+          "The service has no service layer at all"
+        ],
+        [
+          "Responsibilities per File",
+          "1 responsibility",
+          "2 responsibilities",
+          "3 responsibilities",
+          ">3, or the file is imported by every layer"
+        ],
+        [
+          "Config & Secrets Loading",
+          "One config module, validated at startup",
+          "One config module, no validation",
+          "`process.env` read in 2-5 files",
+          "`process.env` read throughout, with inline defaults"
+        ]
+      ]
+    },
+    {
+      "key": "code-quality",
+      "prefix": "CQ",
+      "label": "Code Quality",
+      "match": [
+        "code quality",
+        "complexity",
+        "code smell",
+        "smells",
+        "duplication",
+        "dead code",
+        "readability",
+        "maintainability",
+        "naming",
+        "lint",
+        "type safety",
+        "documentation",
+        "comments",
+        "coding standards",
+        "code standards",
+        "style",
+        "refactoring",
+        "god class",
+        "god module",
+        "clean code"
+      ],
+      "thresholds": [
+        [
+          "Cyclomatic Complexity - Function / Method",
+          ">10 per function",
+          "Flag for review, extract named helper functions",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Cyclomatic Complexity - Function / Method",
+          ">20 per function",
+          "High-priority finding, decomposition required before further change",
+          "High",
+          "P2"
+        ],
+        [
+          "Cyclomatic Complexity - Function / Method",
+          ">40 per function",
+          "Critical, the function cannot be meaningfully unit tested, decompose first",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Cyclomatic Complexity - Module / File",
+          ">50 decision points",
+          "Flag for review, the module carries more than one responsibility",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Cyclomatic Complexity - Module / File",
+          ">100 decision points",
+          "Critical, god module, split by responsibility before adding features",
+          "Critical",
+          "P2"
+        ],
+        [
+          "Nested Condition Depth",
+          ">= 3 levels",
+          "Flag for review",
+          "Medium",
+          "P3"
+        ],
+        [
+          "Nested Condition Depth",
+          ">= 4 levels",
+          "High-complexity finding, apply guard clauses and early returns",
+          "High",
+          "P2"
+        ],
+        [
+          "Nested Condition Depth",
+          "> 5 levels",
+          "Critical, extract sub-functions before any further change",
+          "Critical",
+          "P2"
+        ],
+        [
+          "Function Length",
+          ">50 LOC",
+          "Review for excessive responsibility",
+          "Medium",
+          "P3"
+        ],
+        [
+          "Function Length",
+          ">100 LOC",
+          "High-priority finding, the function owns several unrelated concerns",
+          "High",
+          "P2"
+        ],
+        [
+          "File / Module Length",
+          ">300 LOC",
+          "Review for decomposition",
+          "Medium",
+          "P2"
+        ],
+        [
+          "File / Module Length",
+          ">500 LOC",
+          "High maintainability concern",
+          "High",
+          "P2"
+        ],
+        [
+          "File / Module Length",
+          ">1,000 LOC",
+          "Critical, blocks review, testing and parallel work on the same file",
+          "Critical",
+          "P2"
+        ],
+        [
+          "Function Parameter Count",
+          ">5 parameters",
+          "Flag for review, introduce a parameter object",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Function Parameter Count",
+          ">8 parameters",
+          "High, positional call sites are silently error-prone",
+          "High",
+          "P2"
+        ],
+        [
+          "Code Duplication",
+          ">20 identical lines across files",
+          "Flag for review, extract a shared helper",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Code Duplication",
+          ">100 identical lines, or >60% file similarity",
+          "High, the copies will diverge and in practice already have",
+          "High",
+          "P2"
+        ],
+        [
+          "Code Duplication",
+          "A business rule or defect duplicated across copies",
+          "Critical, a fix lands in one copy only and the others keep the defect",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Dead Code (0 inbound references)",
+          ">50 LOC",
+          "Flag for deletion",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Dead Code (0 inbound references)",
+          ">250 LOC",
+          "High, misleads readers and inflates the review surface",
+          "High",
+          "P2"
+        ],
+        [
+          "Commented-Out Code",
+          ">20 consecutive lines",
+          "Flag for deletion, version control already holds the history",
+          "Low",
+          "P3"
+        ],
+        [
+          "Commented-Out Code",
+          "Disabled logic on a live path (auth, payment, validation)",
+          "Critical, the running behaviour no longer matches what the file shows",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Type Safety (any / strict errors)",
+          ">20 `any` annotations in one file",
+          "Flag for review, type the exported surface first",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Type Safety (any / strict errors)",
+          ">= 1 error under `strict`",
+          "High, the compiler is reporting a real defect that nothing gates",
+          "High",
+          "P2"
+        ],
+        [
+          "Type Safety (any / strict errors)",
+          "`strict` disabled, or an error on a live write path",
+          "Critical, incorrect data can reach the database",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Lint Violations",
+          ">10 errors in one file",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Lint Violations",
+          "Any `no-floating-promises` violation",
+          "High, a rejected promise is unhandled and can take the process down",
+          "High",
+          "P2"
+        ],
+        [
+          "Lint Violations",
+          "The linter is configured to report nothing on the service",
+          "Critical, every other threshold on this sheet is unenforced",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Documentation Coverage",
+          "<30% of the public surface documented",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Documentation Coverage",
+          "Documentation contradicts the running system",
+          "Critical, onboarding and operations are actively misled",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Naming / Convention Consistency",
+          ">1 convention in the same folder or layer",
+          "Hygiene finding, align on one documented convention",
+          "Low",
+          "P3"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Cyclomatic Complexity - Function / Method",
+          "1-5",
+          "6-10",
+          "11-20",
+          ">20"
+        ],
+        [
+          "Cyclomatic Complexity - Module / File (decision points)",
+          "<= 20",
+          "21-50",
+          "51-100",
+          ">100"
+        ],
+        [
+          "Nested Condition Depth",
+          "0-2 levels",
+          "3 levels",
+          "4-5 levels",
+          ">5 levels"
+        ],
+        [
+          "Function Length",
+          "<= 30 LOC",
+          "31-50 LOC",
+          "51-100 LOC",
+          ">100 LOC"
+        ],
+        [
+          "File / Module Length",
+          "<= 200 LOC",
+          "201-300 LOC",
+          "301-500 LOC",
+          ">500 LOC"
+        ],
+        [
+          "Function Parameter Count",
+          "<= 3",
+          "4-5",
+          "6-8",
+          ">8"
+        ],
+        [
+          "Code Duplication",
+          "<20 identical lines",
+          "20-100 identical lines",
+          ">100 identical lines, or >60% file similarity",
+          "A business rule or defect duplicated across copies"
+        ],
+        [
+          "Dead Code (0 inbound references)",
+          "<= 50 LOC",
+          "51-250 LOC",
+          ">250 LOC",
+          "A dead near-duplicate of a live module"
+        ],
+        [
+          "Commented-Out Code",
+          "<20 lines",
+          "20-150 lines",
+          ">150 consecutive lines, or a file with 0 live code lines",
+          "Disabled logic on a live path (auth, payment, validation)"
+        ],
+        [
+          "Type Safety (any / strict-mode errors)",
+          "0 `any`, 0 errors",
+          "1-20 `any`, 0 errors",
+          ">20 `any`, or >= 1 error under `strict`",
+          "`strict` disabled repo-wide, or a type error on a live write path"
+        ],
+        [
+          "Lint Violations",
+          "0",
+          "1-10 warnings",
+          ">10 errors, or any `no-floating-promises` violation",
+          "A correctness rule disabled, or a linter that reports nothing"
+        ],
+        [
+          "Documentation Coverage",
+          ">= 60% of the public surface",
+          "30-59%",
+          "<30%",
+          "Documentation contradicts the running system"
+        ]
+      ]
+    },
+    {
+      "key": "api-design",
+      "prefix": "API",
+      "label": "API Design & Contracts",
+      "match": [
+        "api",
+        "api design",
+        "contract",
+        "endpoint",
+        "rest",
+        "versioning",
+        "pagination",
+        "status code",
+        "openapi",
+        "swagger",
+        "response shape",
+        "api contract",
+        "request validation schema",
+        "dto"
+      ],
+      "thresholds": [
+        [
+          "Response Shape Consistency",
+          ">3 routes return an ad hoc error shape",
+          "Flag for review, define one error response contract",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Response Shape Consistency",
+          "Most routes each invent their own shape",
+          "High, every client has to special-case per endpoint",
+          "High",
+          "P2"
+        ],
+        [
+          "HTTP Status Codes",
+          "A failure returned with a 2xx status",
+          "High, clients cannot tell success from failure",
+          "High",
+          "P2"
+        ],
+        [
+          "API Versioning",
+          "0 routes versioned",
+          "Flag for review, agree a scheme before the first breaking change",
+          "Medium",
+          "P3"
+        ],
+        [
+          "Pagination",
+          "A list endpoint with no limit on a table that grows",
+          "High, the response size grows without bound",
+          "High",
+          "P2"
+        ],
+        [
+          "Pagination",
+          "A user-supplied page size with no cap",
+          "High, one request can ask for the whole table",
+          "High",
+          "P2"
+        ],
+        [
+          "API Documentation",
+          "<50% of routes appear in the OpenAPI or Postman spec",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "API Documentation",
+          "The spec contradicts the routes the service actually serves",
+          "Critical, integrators build against something that does not exist",
+          "Critical",
+          "P1"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Response Shape Consistency",
+          "One shared response contract",
+          "1-3 routes differ",
+          ">3 routes differ",
+          "Every route invents its own shape"
+        ],
+        [
+          "HTTP Status Codes",
+          "Correct codes everywhere",
+          "A wrong 4xx where another 4xx fits",
+          "A 5xx where a 4xx belongs",
+          "A failure returned as 2xx"
+        ],
+        [
+          "API Versioning",
+          "Versioned and documented",
+          "Versioned by convention only",
+          "0 routes versioned",
+          "Breaking changes shipped on an unversioned route"
+        ],
+        [
+          "Pagination",
+          "Every list endpoint is paginated",
+          "Pagination missing on a fixed-size table",
+          "A growing table with no limit",
+          "A user-supplied page size with no cap"
+        ],
+        [
+          "API Documentation",
+          ">= 80% of routes documented",
+          "50-79%",
+          "<50%",
+          "The spec contradicts the running routes"
+        ]
+      ]
+    },
+    {
+      "key": "data",
+      "prefix": "DATA",
+      "label": "Data & Persistence",
+      "match": [
+        "data",
+        "persistence",
+        "database",
+        "query",
+        "queries",
+        "orm",
+        "prisma",
+        "sequelize",
+        "typeorm",
+        "mongoose",
+        "transaction",
+        "migration",
+        "index",
+        "schema",
+        "n+1",
+        "data integrity",
+        "data access",
+        "repository layer"
+      ],
+      "thresholds": [
+        [
+          "Transaction Coverage",
+          "2 or more writes in one flow with no transaction",
+          "High, a partial failure leaves half-written data behind",
+          "High",
+          "P2"
+        ],
+        [
+          "Transaction Coverage",
+          "A money or ownership flow with no transaction",
+          "Critical, data corruption that is hard to detect and harder to undo",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Query Efficiency (N+1)",
+          "1 + N queries on a bounded, low-traffic path",
+          "Medium, the cost grows with the row count",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Query Efficiency (N+1)",
+          "1 + N queries over an unbounded set on a hot path",
+          "High, the endpoint will not survive realistic load",
+          "High",
+          "P2"
+        ],
+        [
+          "Indexing",
+          "A filter or join column with no index on a table that grows",
+          "Flag for review, add the index in a migration",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Indexing",
+          "An unindexed column on a table over 1 million rows",
+          "High, the query gets slower every week",
+          "High",
+          "P2"
+        ],
+        [
+          "Over-fetching",
+          "A full row or model read where 2 or 3 fields are used",
+          "Flag for review, select only the fields you need",
+          "Medium",
+          "P3"
+        ],
+        [
+          "Result Set Bounds",
+          "A read with no `take` or `limit` on a growing table",
+          "High, one request can pull the whole table into memory",
+          "High",
+          "P2"
+        ],
+        [
+          "Connection Lifecycle",
+          "A client or pool created per request",
+          "High, the database runs out of connections under load",
+          "High",
+          "P2"
+        ],
+        [
+          "Migrations",
+          "A schema change applied by hand with no migration file",
+          "Critical, environments drift and the change cannot be replayed",
+          "Critical",
+          "P1"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Transaction Coverage",
+          "Every multi-write flow is transactional",
+          "A 2-write flow that is idempotent on retry",
+          "2 or more writes with no transaction",
+          "A money or ownership flow with no transaction"
+        ],
+        [
+          "Query Efficiency (N+1)",
+          "No N+1 on any path",
+          "1 + N on a bounded, low-traffic path",
+          "1 + N over an unbounded set on a hot path",
+          "1 + N driven by a user-supplied page size"
+        ],
+        [
+          "Indexing",
+          "Every filter and join column indexed",
+          "A missing index on a small table",
+          "A missing index on a growing table",
+          "A missing index on a table over 1 million rows"
+        ],
+        [
+          "Result Set Bounds",
+          "Every read is bounded",
+          "Unbounded on a fixed-size table",
+          "Unbounded on a growing table",
+          "Unbounded and driven by user input"
+        ],
+        [
+          "Connection Lifecycle",
+          "One pooled client for the process",
+          "Pool size not tuned",
+          "A client created per module",
+          "A client created per request"
+        ]
+      ]
+    },
+    {
+      "key": "async",
+      "prefix": "ASYNC",
+      "label": "Async & Concurrency",
+      "match": [
+        "async",
+        "concurrency",
+        "promise",
+        "await",
+        "race condition",
+        "timeout",
+        "event loop",
+        "parallel",
+        "retry",
+        "circuit breaker",
+        "background job",
+        "queue",
+        "worker"
+      ],
+      "thresholds": [
+        [
+          "Async Safety",
+          "An unawaited call whose failure is silently lost",
+          "Medium, the failure disappears with no log and no retry",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Async Safety",
+          "Any floating promise on a request path",
+          "High, the rejection is unhandled and can crash the process",
+          "High",
+          "P1"
+        ],
+        [
+          "Outbound Call Timeouts",
+          "Any outbound HTTP or database call on the request path with no timeout",
+          "High, one slow dependency holds request handlers open",
+          "High",
+          "P2"
+        ],
+        [
+          "Outbound Call Timeouts",
+          "No retry or circuit breaker on a dependency that is known to fail",
+          "Flag for review, decide the policy and apply it in one place",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Concurrency Limits",
+          "`Promise.all` over an array whose length comes from user input",
+          "High, one request can open hundreds of connections at once",
+          "High",
+          "P2"
+        ],
+        [
+          "Event Emitter Errors",
+          "An emitter or stream with no `error` listener",
+          "Critical, an unhandled `error` event takes the process down",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Sequential Awaits",
+          "Independent awaits run one after another on the request path",
+          "Flag for review, run them with `Promise.all`",
+          "Low",
+          "P3"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Async Safety",
+          "0 floating promises",
+          "An unawaited call that cannot crash the process",
+          "Any floating promise on a request path",
+          "An unhandled emitter `error` that takes the process down"
+        ],
+        [
+          "Outbound Call Timeouts",
+          "Every call has a timeout and a retry policy",
+          "A timeout missing off the request path",
+          "Any call on the request path with no timeout",
+          "No timeouts anywhere and no circuit breaker"
+        ],
+        [
+          "Concurrency Limits",
+          "Bounded with an explicit concurrency limit",
+          "`Promise.all` over a bounded array",
+          "`Promise.all` over an unbounded array",
+          "Fan-out sized by user input"
+        ],
+        [
+          "Event Emitter Errors",
+          "Every emitter has an `error` listener",
+          "A listener that only logs",
+          "A listener missing off the request path",
+          "A missing listener on a request path emitter"
+        ]
+      ]
+    },
+    {
+      "key": "error-handling",
+      "prefix": "ERR",
+      "label": "Error Handling",
+      "match": [
+        "error handling",
+        "errors",
+        "exception",
+        "try catch",
+        "failure",
+        "error middleware",
+        "error contract",
+        "resilience",
+        "fault tolerance"
+      ],
+      "thresholds": [
+        [
+          "Central Error Handling",
+          "No central error handler registered in the app bootstrap",
+          "High, each route invents its own failure behaviour",
+          "High",
+          "P1"
+        ],
+        [
+          "Swallowed Errors",
+          ">5 catch blocks that log nothing and rethrow nothing",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Swallowed Errors",
+          "An error swallowed on an auth, payment or write path",
+          "Critical, the failure is invisible and the caller is told it worked",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Operational vs Programmer Errors",
+          "No distinction between expected failures and bugs",
+          "Flag for review, use one error type with an `isOperational` flag",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Process-level Handlers",
+          "No `unhandledRejection` or `uncaughtException` handler",
+          "High, the process dies with no log of why",
+          "High",
+          "P2"
+        ],
+        [
+          "Error Detail Leakage",
+          "A stack trace or database error returned in an API response",
+          "High, internal structure is handed to anyone who can send a bad request",
+          "High",
+          "P1"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Central Error Handling",
+          "One handler, one error contract",
+          "One handler, shapes vary",
+          "A handler that misses async errors",
+          "No central handler at all"
+        ],
+        [
+          "Swallowed Errors",
+          "0 empty catch blocks",
+          "1-5, all off the critical path",
+          ">5, or one on a critical read path",
+          "One on an auth, payment or write path"
+        ],
+        [
+          "Error Detail Leakage",
+          "Generic message, detail logged server side",
+          "An internal error code exposed",
+          "A stack trace on a non-production path",
+          "A stack trace or database error in a production response"
+        ]
+      ]
+    },
+    {
+      "key": "security",
+      "prefix": "SEC",
+      "label": "Security",
+      "match": [
+        "security",
+        "owasp",
+        "auth",
+        "authentication",
+        "authorization",
+        "access control",
+        "injection",
+        "xss",
+        "csrf",
+        "secret",
+        "credential",
+        "token",
+        "jwt",
+        "rate limit",
+        "cors",
+        "validation",
+        "sanitization",
+        "vulnerability",
+        "secure coding",
+        "rbac",
+        "permissions",
+        "role based access",
+        "data protection",
+        "encryption"
+      ],
+      "thresholds": [
+        [
+          "Route Input Validation Coverage",
+          "1-3 routes with no schema or DTO validation",
+          "Flag for review, add validation at the route boundary",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Route Input Validation Coverage",
+          "Any unauthenticated route with no validation",
+          "High, untrusted input reaches business logic unchecked",
+          "High",
+          "P1"
+        ],
+        [
+          "Route Input Validation Coverage",
+          "A write route with no validation and no ownership check",
+          "Critical, OWASP A01 and A03 are both reachable from one request",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Authorization Coverage",
+          "Role checks written in the handler body instead of middleware",
+          "Flag for review, move the check into a guard so it cannot be forgotten",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Authorization Coverage",
+          "A route that takes an ID with no ownership check",
+          "Critical, one user can read or change another user's data",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Injection",
+          "A query or command built by string concatenation with user input",
+          "Critical, OWASP A03:2021, parameterise it",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Secrets Handling",
+          "A secret with a hardcoded fallback default in code",
+          "High, the default ships to any environment that forgets the variable",
+          "High",
+          "P1"
+        ],
+        [
+          "Secrets Handling",
+          "A real secret committed to the repo or baked into an image layer",
+          "Critical, rotate the secret first, then fix the code",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Rate Limiting",
+          "No rate limit on login, signup or password reset",
+          "High, credential stuffing is free",
+          "High",
+          "P2"
+        ],
+        [
+          "Security Headers",
+          "`helmet` or an equivalent not registered",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "CORS",
+          "`origin: '*'` together with credentials",
+          "High, any site can call the API as the logged-in user",
+          "High",
+          "P1"
+        ],
+        [
+          "Token & Session Handling",
+          "A token with no expiry, or a signing secret read from a default",
+          "Critical, a leaked token stays valid",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Payload Limits",
+          "No request body size limit",
+          "Flag for review, one large upload can exhaust memory",
+          "Medium",
+          "P2"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Route Input Validation Coverage",
+          "Every route validated at the boundary",
+          "1-3 routes unvalidated",
+          "Any unauthenticated route unvalidated",
+          "A write route with no validation and no ownership check"
+        ],
+        [
+          "Authorization Coverage",
+          "Every ID route checks ownership",
+          "A gap behind an admin-only route",
+          "A gap behind an authenticated route",
+          "A gap reachable without authentication"
+        ],
+        [
+          "Injection",
+          "Every query parameterised",
+          "A raw query with no user input in it",
+          "A raw query with hand-escaped user input",
+          "String concatenation with user input"
+        ],
+        [
+          "Secrets Handling",
+          "All secrets from the environment, validated at boot",
+          "A local-dev only default",
+          "A hardcoded production fallback",
+          "A real secret committed or baked into an image"
+        ],
+        [
+          "Rate Limiting",
+          "Limits on auth and write endpoints",
+          "Limits on auth only",
+          "No limit on auth endpoints",
+          "No limit anywhere on a public API"
+        ]
+      ]
+    },
+    {
+      "key": "performance",
+      "prefix": "PERF",
+      "label": "Performance",
+      "match": [
+        "performance",
+        "latency",
+        "throughput",
+        "load",
+        "scalability",
+        "caching",
+        "cache",
+        "memory",
+        "blocking",
+        "slow",
+        "response time",
+        "optimization",
+        "efficiency",
+        "profiling",
+        "hot path"
+      ],
+      "thresholds": [
+        [
+          "Event Loop Blocking",
+          "A synchronous file, crypto or large JSON call on the request path",
+          "High, every other request waits behind it",
+          "High",
+          "P2"
+        ],
+        [
+          "Event Loop Blocking",
+          "Synchronous work over 100ms on a hot path",
+          "Critical, the service stops serving under normal traffic",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Unbounded Reads",
+          "A query with no limit on a table that grows",
+          "High, memory use grows with the data",
+          "High",
+          "P2"
+        ],
+        [
+          "Caching",
+          "No cache on a hot read whose data changes rarely",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Response Payload Size",
+          "A list response over 1 MB",
+          "Flag for review, paginate or return fewer fields",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Per-request Cost",
+          "A client, pool or parser built per request",
+          "High, the setup cost is paid on every call",
+          "High",
+          "P2"
+        ],
+        [
+          "Sequential Awaits",
+          "Independent awaits run one after another, adding measurable latency",
+          "Flag for review, run them together",
+          "Low",
+          "P3"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Event Loop Blocking",
+          "No synchronous work on the request path",
+          "Synchronous work under 10ms",
+          "Synchronous work 10-100ms",
+          ">100ms, or synchronous work on a hot path"
+        ],
+        [
+          "Unbounded Reads",
+          "Every read bounded",
+          "Unbounded on a fixed-size table",
+          "Unbounded on a growing table",
+          "Unbounded and sized by user input"
+        ],
+        [
+          "Response Payload Size",
+          "<100 KB",
+          "100 KB to 1 MB",
+          "1-10 MB",
+          ">10 MB, or unbounded"
+        ],
+        [
+          "Per-request Cost",
+          "Everything shared and reused",
+          "A parser rebuilt per request",
+          "A client created per request",
+          "A connection pool created per request"
+        ]
+      ]
+    },
+    {
+      "key": "testing",
+      "prefix": "TEST",
+      "label": "Testing",
+      "match": [
+        "testing",
+        "test",
+        "tests",
+        "coverage",
+        "unit test",
+        "integration test",
+        "e2e",
+        "ci gate",
+        "quality gate",
+        "jest",
+        "vitest",
+        "mocha",
+        "testability",
+        "automated tests",
+        "regression"
+      ],
+      "thresholds": [
+        [
+          "Test Coverage",
+          "40-70% lines on a non-critical module",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Test Coverage",
+          "<40% lines, or no error-path tests",
+          "High, regressions ship unnoticed",
+          "High",
+          "P2"
+        ],
+        [
+          "Test Coverage",
+          "0% on an auth, payment or data-write path",
+          "Critical, the riskiest code in the service has no safety net",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Error-path Tests",
+          "0 tests assert a 4xx or 5xx response",
+          "Flag for review, the happy path is the easy half",
+          "Medium",
+          "P2"
+        ],
+        [
+          "API Tests",
+          "0 end-to-end tests against a running app",
+          "High, nothing checks that the routes are wired up at all",
+          "High",
+          "P2"
+        ],
+        [
+          "Test Isolation",
+          "Tests share a database or fixtures with no reset between runs",
+          "Flag for review, they will fail in a different order",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Quality Gate Coverage",
+          "1 gate (lint / type-check / test / audit) missing from CI",
+          "Flag for review",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Quality Gate Coverage",
+          "0 gates run, or a gate present but bypassed",
+          "Critical, every other threshold on this sheet is unenforced",
+          "Critical",
+          "P1"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Test Coverage",
+          ">70% lines with error-path tests",
+          "40-70% lines",
+          "<40% lines, or no error-path tests",
+          "0% on an auth, payment or data-write path"
+        ],
+        [
+          "Error-path Tests",
+          "Error paths tested per route",
+          "Some routes covered",
+          "0 error-path tests",
+          "0 tests on an auth or payment path"
+        ],
+        [
+          "Test Isolation",
+          "Each test sets up and tears down its own data",
+          "Shared read-only fixtures",
+          "Shared mutable fixtures",
+          "Tests pass in one order only"
+        ],
+        [
+          "Quality Gate Coverage",
+          "All gates enforced in CI",
+          "1 gate missing",
+          ">1 gate missing",
+          "0 gates run, or a gate present but bypassed"
+        ]
+      ]
+    },
+    {
+      "key": "operations",
+      "prefix": "OPS",
+      "label": "Operations & Observability",
+      "match": [
+        "operations",
+        "observability",
+        "logging",
+        "monitoring",
+        "alerting",
+        "health check",
+        "graceful shutdown",
+        "metrics",
+        "tracing",
+        "runtime",
+        "node version",
+        "statelessness",
+        "devops",
+        "incident",
+        "runbook",
+        "deployment readiness"
+      ],
+      "thresholds": [
+        [
+          "Logging & Observability",
+          "No structured logger, or no correlation ID across services",
+          "Medium, a production failure cannot be traced back to one request",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Logging & Observability",
+          "Nothing logged on a critical failure path",
+          "High, the failure is invisible until a user reports it",
+          "High",
+          "P2"
+        ],
+        [
+          "Graceful Shutdown",
+          "No `SIGTERM` handler on a service behind a load balancer",
+          "High, every deploy drops in-flight requests",
+          "High",
+          "P2"
+        ],
+        [
+          "Health Checks",
+          "No health or readiness endpoint",
+          "Flag for review, the platform cannot tell a hung process from a healthy one",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Node Version",
+          "A Node version past end of life in `engines`, CI or the Dockerfile",
+          "High, security fixes are no longer published for it",
+          "High",
+          "P2"
+        ],
+        [
+          "Config Validation at Boot",
+          "Required environment variables read with no check at startup",
+          "Flag for review, fail fast at boot instead of on the first request",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Statelessness",
+          "Request state kept in a module-level variable",
+          "High, the service cannot be scaled past one instance",
+          "High",
+          "P2"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Logging & Observability",
+          "Structured logs with correlation IDs",
+          "Logs present but unstructured",
+          "No correlation ID across a multi-service call path",
+          "Nothing logged on a critical failure path"
+        ],
+        [
+          "Graceful Shutdown",
+          "Drains connections on `SIGTERM`",
+          "Closes the server but not the pool",
+          "No handler, single instance",
+          "No handler, rolling deploys"
+        ],
+        [
+          "Health Checks",
+          "Liveness and readiness, both meaningful",
+          "Liveness only",
+          "A health route that always returns 200",
+          "No health route"
+        ],
+        [
+          "Node Version",
+          "Current LTS, pinned",
+          "LTS, not pinned",
+          "Maintenance only",
+          "Past end of life"
+        ]
+      ]
+    },
+    {
+      "key": "containerization",
+      "prefix": "DOCK",
+      "label": "Containerization & Deployment",
+      "match": [
+        "container",
+        "containerization",
+        "docker",
+        "dockerfile",
+        "image",
+        "deployment",
+        "kubernetes",
+        "build pipeline",
+        "ci/cd",
+        "release pipeline",
+        "infrastructure"
+      ],
+      "thresholds": [
+        [
+          "Image User",
+          "The container runs as root",
+          "High, a break-out costs more than it needs to",
+          "High",
+          "P2"
+        ],
+        [
+          "Signal Handling",
+          "`CMD [\"npm\", \"start\"]` on a service that needs graceful shutdown",
+          "High, npm swallows `SIGTERM` and the process is killed outright",
+          "High",
+          "P2"
+        ],
+        [
+          "Image Contents",
+          "devDependencies, tests or source shipped in the final image",
+          "Flag for review, use a multi-stage build",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Image Contents",
+          "A secret or a `.env` file baked into a layer",
+          "Critical, the layer is readable by anyone who can pull the image",
+          "Critical",
+          "P1"
+        ],
+        [
+          "Base Image",
+          "An unpinned or `latest` base image tag",
+          "Flag for review, pin the version or the digest",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Build Context",
+          "No `.dockerignore`",
+          "Hygiene finding, the build context ships `node_modules` and `.git`",
+          "Low",
+          "P3"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Image User",
+          "Runs as a non-root user",
+          "Non-root but with broad file permissions",
+          "Runs as root on a sandboxed platform",
+          "Runs as root with host mounts"
+        ],
+        [
+          "Signal Handling",
+          "The Node process is PID 1 and handles `SIGTERM`",
+          "An init wrapper forwards signals",
+          "A shell wrapper that forwards nothing",
+          "`npm start` as `CMD`"
+        ],
+        [
+          "Image Contents",
+          "Runtime files only",
+          "Some build files left in",
+          "devDependencies shipped",
+          "A secret baked into a layer"
+        ],
+        [
+          "Base Image",
+          "Pinned digest, slim or distroless",
+          "Pinned version tag",
+          "Floating minor tag",
+          "`latest`"
+        ]
+      ]
+    },
+    {
+      "key": "dependencies",
+      "prefix": "DEP",
+      "label": "Dependency Governance",
+      "match": [
+        "dependency",
+        "dependencies",
+        "package",
+        "npm audit",
+        "lockfile",
+        "licence",
+        "license",
+        "supply chain",
+        "vulnerable package",
+        "outdated",
+        "third party",
+        "sbom",
+        "vendor"
+      ],
+      "thresholds": [
+        [
+          "Dependency Advisories (npm audit)",
+          "Any moderate advisory in a runtime dependency",
+          "Flag for review, plan the upgrade",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Dependency Advisories (npm audit)",
+          "Any high or critical advisory",
+          "High, a known exploit path ships with the service",
+          "High",
+          "P2"
+        ],
+        [
+          "Lockfile",
+          "No lockfile committed",
+          "High, two installs of the same commit can produce different code",
+          "High",
+          "P2"
+        ],
+        [
+          "CI Install",
+          "`npm install` used in CI instead of `npm ci`",
+          "Flag for review, CI should install exactly what the lockfile says",
+          "Medium",
+          "P2"
+        ],
+        [
+          "Unmaintained Packages",
+          "A dependency with no release in over 18 months",
+          "High, nobody will ship the next security fix for it",
+          "High",
+          "P2"
+        ],
+        [
+          "Version Drift",
+          "A runtime dependency more than one major version behind",
+          "Flag for review, plan the upgrade before it becomes forced",
+          "Medium",
+          "P3"
+        ],
+        [
+          "Licence Risk",
+          "A copyleft or unlicensed package in a distributed service",
+          "Flag for review with whoever owns licensing",
+          "Medium",
+          "P2"
+        ]
+      ],
+      "severity_bands": [
+        [
+          "Dependency Advisories (npm audit)",
+          "0 advisories, lockfile committed",
+          "A moderate advisory in a runtime dependency",
+          "A high or critical advisory",
+          "No lockfile, or a known-exploited package in active use"
+        ],
+        [
+          "Lockfile",
+          "Committed and respected in CI",
+          "Committed, `npm install` in CI",
+          "Committed but regenerated by hand",
+          "No lockfile"
+        ],
+        [
+          "Unmaintained Packages",
+          "All dependencies released in the last 6 months",
+          "6-12 months",
+          "12-18 months",
+          ">18 months, or archived upstream"
+        ],
+        [
+          "Version Drift",
+          "Within one minor",
+          "Within one major",
+          "2 majors behind",
+          "Past end of support"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "name": "code-review-reports",
   "displayName": "Code Review Reports",
-  "description": "Produces a Core Review Report: a structured, evidence-based Markdown audit of a repository scored against Review Criteria supplied at invocation time. Bundles two skills — react-code-review (grounded in Vercel React performance rules and Cognine React coding standards) and node-code-review (grounded in Node.js Best Practices and OWASP Top 10) — sharing one report shape, rubric set, and pre-delivery validation gate.",
-  "version": "1.0.0",
+  "description": "Produces an evidence-based code quality workbook (.xlsx) for a repository, scored against Review Criteria supplied at invocation time. Bundles two skills — react-code-review (grounded in Vercel React performance rules and Cognine React coding standards) and node-code-review (grounded in Node.js Best Practices and OWASP Top 10) — sharing one 12-column findings-sheet shape, a Threshold Mapping sheet that states the rule behind every severity, one rubric set, and one pre-delivery validation gate.",
+  "version": "2.0.0",
   "author": { "name": "Engineering" },
   "license": "MIT",
   "keywords": [
@@ -15,6 +15,8 @@
     "security",
     "performance",
     "owasp",
-    "architecture"
+    "architecture",
+    "excel",
+    "xlsx"
   ]
 }
